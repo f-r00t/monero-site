@@ -21,3 +21,22 @@ jobs:
         run: bundle install --jobs 4 --retry 3
       - name: build site
         run: bundle exec jekyll build --limit-posts 10
+
+  link-check:
+    name: Link check (HTMLProofer)
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+      - name: install bundler
+        run: gem install bundler:2.2.23
+      - name: bundle install
+        run: bundle install --jobs 4 --retry 3
+      - name: build site
+        run: bundle exec jekyll build
+      - name: install html-proofer
+        run: gem install html-proofer -v '~> 5.0'
+      - name: check links
+        run: ruby .github/scripts/link-check.rb _site
