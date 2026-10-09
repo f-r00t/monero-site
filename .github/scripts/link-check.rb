@@ -26,24 +26,37 @@
 #   breakage ("ratchet"). They are catalogued upstream in:
 #       <!-- TODO: replace with the tracking issue URL before opening the PR -->
 #   Entries should be removed from this list as the underlying links are fixed.
+ORIGINAL_DEFAULT_EXTERNAL = Encoding.default_external
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
 require "html-proofer"
-module HTMLProofer
-  module Utils
-    def create_nokogiri(path)
-      content =
-        if File.exist?(path) && !File.directory?(path)
-          File.read(path, encoding: "UTF-8")
-        else
-          path.to_s.dup.force_encoding("UTF-8")
-        end
 
-      Nokogiri::HTML5(content.scrub, max_errors: -1)
+warn "DEBUG default_external original=#{ORIGINAL_DEFAULT_EXTERNAL} now=#{Encoding.default_external}"
+
+module ForceUtf8PageRead
+  class << self; attr_accessor :logged; end
+
+  def create_nokogiri(path)
+    content =
+      if File.exist?(path) && !File.directory?(path)
+        File.read(path, encoding: "UTF-8")
+      else
+        path.to_s.dup.force_encoding("UTF-8")
+      end
+    content = content.scrub
+
+    unless ForceUtf8PageRead.logged
+      ForceUtf8PageRead.logged = true
+      count = Nokogiri::HTML5(content, max_errors: -1).css("a, link").size
+      warn "DEBUG override active: content.encoding=#{content.encoding} first-page a,link nodes=#{count}"
     end
+
+    Nokogiri::HTML5(content, max_errors: -1)
   end
 end
+
+HTMLProofer::Runner.prepend(ForceUtf8PageRead)
 
 site_dir = ARGV[0] || "_site"
 
