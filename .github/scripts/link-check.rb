@@ -30,6 +30,20 @@ Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
 require "html-proofer"
+module HTMLProofer
+  module Utils
+    def create_nokogiri(path)
+      content =
+        if File.exist?(path) && !File.directory?(path)
+          File.read(path, encoding: "UTF-8")
+        else
+          path.to_s.dup.force_encoding("UTF-8")
+        end
+
+      Nokogiri::HTML5(content.scrub, max_errors: -1)
+    end
+  end
+end
 
 site_dir = ARGV[0] || "_site"
 
