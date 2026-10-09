@@ -1,0 +1,30 @@
+# htmltest config: fail CI on broken internal links in the built site.
+# Internal hyperlinks only; external links, images, scripts and anchors are
+# out of scope for this gate.
+DirectoryPath: _site
+
+CheckExternal: false
+CheckImages: false
+CheckScripts: false
+CheckMailto: false
+CheckTel: false
+CheckDoctype: false
+CheckInternalHash: false
+
+IgnoreAltMissing: true
+IgnoreInternalEmptyHash: true
+IgnoreDirectoryMissingTrailingSlash: true
+
+# Pre-existing broken links, ignored so the gate blocks only new breakage.
+# TODO: link the upstream tracking issue before opening the PR.
+IgnoreURLs:
+  - "^/blog/tags/(ccs|cryptography|dev|development|jamtis|kovri|magic|malware|monero|protocol|seraphis)\\.html$"
+  - "/blog/tags/network(%20| )upgrade\\.html"
+  - "^/design-goals/?$"
+  - "^/team/?$"
+  - "^/knowledge-base/moneropedia/i2p/?$"
+  - "/generator/?$"
+  - "^cryptonote\\.org/whitepaper\\.pdf$"
+  - "^/2026/01/07/monero-0\\.18\\.4\\.5-released\\.html$"
+  - "site\\.baseurl"
+  - "^\\.$"
