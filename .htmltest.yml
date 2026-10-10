@@ -16,7 +16,7 @@ IgnoreInternalEmptyHash: true
 IgnoreDirectoryMissingTrailingSlash: true
 
 # Pre-existing broken links, ignored so the gate blocks only new breakage.
-# TODO: link the upstream tracking issue before opening the PR.
+# Baseline documented in monero-project/monero-site#2723.
 IgnoreURLs:
   - "^/blog/tags/(ccs|cryptography|dev|development|jamtis|kovri|magic|malware|monero|protocol|seraphis)\\.html$"
   - "/blog/tags/network(%20| )upgrade\\.html"
