@@ -25,8 +25,6 @@ jobs:
   link-check:
     name: Link check
     runs-on: ubuntu-22.04
-    env:
-      HTMLTEST_VERSION: 0.17.0
     steps:
       - uses: actions/checkout@v6
       # Ruby 3.1: the site's _plugins use File.exists? (removed in Ruby 3.2).
@@ -40,11 +38,9 @@ jobs:
       # Full build (no --limit-posts) so every post's links are checked.
       - name: build site
         run: bundle exec jekyll build
-      - name: install htmltest
-        run: |
-          curl -fsSL -o /tmp/htmltest.tar.gz \
-            "https://github.com/wjdp/htmltest/releases/download/v${HTMLTEST_VERSION}/htmltest_${HTMLTEST_VERSION}_linux_amd64.tar.gz"
-          tar -xzf /tmp/htmltest.tar.gz htmltest
-          ./htmltest --version
       - name: check links
-        run: ./htmltest
+        uses: lycheeverse/lychee-action@v2.9.0
+        with:
+          args: --config lychee.toml --root-dir "${{ github.workspace }}/_site" "_site/**/*.html"
+          fail: true
+          failIfEmpty: true
