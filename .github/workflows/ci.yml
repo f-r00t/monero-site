@@ -24,7 +24,7 @@ jobs:
 
   link-check:
     name: Link check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
       # Ruby 3.1: the site's _plugins use File.exists? (removed in Ruby 3.2).
